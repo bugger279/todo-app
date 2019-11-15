@@ -7,5 +7,5 @@ export function passwordValidator(
     //   console.log("control",control.value.password,valid);
   return valid
     ? null
-    : { passwordNotMatched: { valid: false, value: control.value.rePassword } }
+    : { passwordNotMatched : { valid: false, value: control.value.rePassword } }
 }
