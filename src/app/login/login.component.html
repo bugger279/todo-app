@@ -1,0 +1,137 @@
+<mat-card *ngIf="myParam=='login'; else elseBlock">
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="submit()">
+            <p>
+                <mat-form-field appearance="outline">
+                    <input type="text" matInput placeholder="Username" formControlName="username">
+                    <mat-error *ngIf="loginForm.get('username').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <input type="password" matInput placeholder="Password" formControlName="password">
+                    <mat-error *ngIf="loginForm.get('username').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                </mat-form-field>
+            </p>
+            {{loginForm.get('password').hasError('pattern')}}
+            <!-- <p *ngIf="error" class="error">
+                {{ error }}
+            </p> -->
+
+            <div class="button">
+                <button type="submit" mat-button>Login</button>
+            </div>
+
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #elseBlock>
+    <mat-card style="width: 80%;">
+        <mat-card-title>Register</mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" style="width: -webkit-fill-available;">
+                <mat-form-field appearance="outline">
+                    <input type="text" matInput formControlName="name" class="form-control">
+                    <mat-label>Name</mat-label>
+                    <mat-error *ngIf="registerForm.get('name').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline">
+                    <input type="text" matInput formControlName="emailId" class="form-control">
+                    <mat-label>Email ID</mat-label>
+                    <mat-error *ngIf="registerForm.get('emailId').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                    <mat-error *ngIf="registerForm.get('emailId').hasError('email')">
+                        You must enter valid email Id
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <input matInput [max]="maxDate" formControlName="DOB" [matDatepicker]="dp3" placeholder="DOB"
+                        disabled>
+                    <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+                    <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+                    <mat-error *ngIf="registerForm.get('DOB').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- <div *ngIf=" submitted && f.emailId.errors" class="invalid-feedback">
+                    <div *ngIf="f.emailId.errors.required">Email is required</div>
+                    </div> -->
+
+                <!-- <label for="lastName">Last Name</label>
+                <input type="text" formControlName="lastName" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                </div> -->
+                <!-- </mat-form-field> -->
+                <!-- <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" formControlName="username" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Username is required</div>
+                </div>
+            </div> -->
+
+
+
+                <mat-form-field appearance="outline">
+                    <input type="password" matInput formControlName="password" class="form-control">
+                    <mat-label>Password</mat-label>
+                    <mat-error *ngIf=" registerForm.get('password').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                    <mat-error *ngIf="registerForm.get('password').hasError('minlength')">
+                        Enter atleast 7 characters
+                    </mat-error>
+                    <mat-error *ngIf="registerForm.get('password').hasError('maxLength')">
+                        Maximum length reached.
+                    </mat-error>
+                    <mat-error *ngIf="registerForm.get('password').hasError('pattern')">
+                        Password must contain small letter a capital letter a number and a special character
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <input type="password" matInput formControlName="rePassword" class="form-control">
+                    <mat-label>Re type Password</mat-label>
+                    <mat-error *ngIf=" registerForm.get('rePassword').hasError('required')">
+                        You must enter a value
+                    </mat-error>
+                    <mat-error *ngIf="registerForm.get('rePassword').invalid">
+                        {{getErrorMessage()}}
+                    </mat-error>
+                </mat-form-field>
+
+
+
+                <!-- <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" formControlName="password" class="form-control"/>
+            </div> -->
+                <div class="button">
+                    <button type="submit" [disabled]="loading" class="btn btn-primary" mat-button>Register</button>
+                </div>
+                <!-- <div class="form-group">
+                    <button ></button> -->
+                <!-- <img *ngIf="loading"
+                    src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                <a [routerLink]="['/login']" class="btn btn-link">Cancel</a> -->
+                <!-- </div> -->
+            </form>
+        </mat-card-content>
+    </mat-card>
+</ng-template>
