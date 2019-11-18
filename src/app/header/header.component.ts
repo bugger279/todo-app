@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
+import { AuthenticationService } from "../_services/authentication.service";
 
 @Component({
   selector: 'app-header',
@@ -7,15 +8,20 @@ import { Router } from '@angular/router'
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  loggedInUser: {};
 
-  constructor(public route: Router) { }
+  constructor(public route: Router, public auth: AuthenticationService) { }
   ngOnInit() {
+    this.auth.currentUser.subscribe(user => {
+      this.loggedInUser = user;
+    })
   }
-  
   headerBtnClk(selectedbutton) {
-    if (selectedbutton != "") {
-      console.log("selectedbutton--->", selectedbutton);
-      this.route.navigate(["/login/", selectedbutton]);
+    if (selectedbutton != "" && selectedbutton != "logout") {
+      this.route.navigate(["/auth/", selectedbutton]);
+    } else if (selectedbutton == "logout"){
+      this.auth.logout();
+      this.route.navigate(["/auth/login"]);
     }
   }
 }

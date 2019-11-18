@@ -19,7 +19,6 @@
                     </mat-error>
                 </mat-form-field>
             </p>
-            {{loginForm.get('password').hasError('pattern')}}
             <!-- <p *ngIf="error" class="error">
                 {{ error }}
             </p> -->
@@ -111,8 +110,8 @@
                     <mat-error *ngIf=" registerForm.get('rePassword').hasError('required')">
                         You must enter a value
                     </mat-error>
-                    <mat-error *ngIf="registerForm.get('rePassword').invalid">
-                        {{getErrorMessage()}}
+                    <mat-error *ngIf="registerForm.get('rePassword').hasError('passwordDoNotMatched')">
+                        Password do not match!
                     </mat-error>
                 </mat-form-field>
 

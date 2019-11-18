@@ -1,8 +1,9 @@
 import { Input, Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { passwordValidator } from '../password-validator';
-import { CommonService } from '../service/common.service';
+// import { passwordValidator } from '../password-validator';
+// import { CommonService } from '../_services/common.service';
+import { AuthenticationService } from "../_services/authentication.service"
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private commonService: CommonService,
+    private authenticationService: AuthenticationService,
     private Router: Router
   ) {
     this.loginForm = new FormGroup({
@@ -37,12 +38,15 @@ export class LoginComponent implements OnInit {
       Validators.maxLength(35),
       Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
       rePassword: new FormControl('', [Validators.required])
-    }, passwordValidator);
+    }, {validators:this.passwordValidator});
   }
   get password() {
     return this.registerForm.get('rePassword');
   }
-
+  passwordValidator(form:FormGroup){
+    const condition = form.get('password').value!==form.get('rePassword').value
+    return condition ? {passwordDoNotMatched:true}:null;
+  }
   getErrorMessage() {
     console.log("this.registerForm.get(rePassword)", this.registerForm.get("rePassword"));
     return this.registerForm.get("rePassword").hasError("required")
@@ -79,12 +83,12 @@ export class LoginComponent implements OnInit {
     //   console.log("in else");
     // }
 
-    this.commonService.loginpost(this.loginForm.value).subscribe(response => {
+    this.authenticationService.login(this.loginForm.value).subscribe(response => {
       if (response.success) {
         // this.commonService.loginpost(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
         console.log("response", response);
-        localStorage.setItem('loggedIn--->', "true");
-        localStorage.setItem('userDetails', JSON.stringify(response));
+        // localStorage.setItem('loggedIn--->', "true");
+        // localStorage.setItem('userDetails', JSON.stringify(response));
         // this.loginSuccessful.emit('Logged In');
         this.Router.navigate([""]);
         // }
@@ -101,10 +105,26 @@ export class LoginComponent implements OnInit {
 
     // stop here if form is invalid
     if (this.registerForm.invalid) {
+      console.log("In Hererer");
       return;
     }
 
     this.loading = true;
+
+    this.authenticationService.register(this.registerForm.value).subscribe(response => {
+      if (response.success) {
+        // this.commonService.loginpost(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
+        console.log("response", response);
+        // localStorage.setItem('loggedIn--->', "true");
+        // localStorage.setItem('userDetails', JSON.stringify(response));
+        // this.loginSuccessful.emit('Logged In');
+        this.Router.navigate(["auth/login"]);
+        // }
+      }
+    },
+      (error) => {
+        window.alert("Login Credentials Not Matched.")
+      });
     // this.userService.register(this.registerForm.value)
     //     .pipe(first())
     //     .subscribe(
