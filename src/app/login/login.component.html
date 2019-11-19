@@ -53,7 +53,7 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                    <input matInput [matDatepicker]="dp3" placeholder="DOB" required>
+                    <input matInput [max]="maxDate" [matDatepicker]="dp3" placeholder="DOB" diaabled required>
                     <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
                     <mat-datepicker #dp3 disabled="false"></mat-datepicker>
                     <mat-error *ngIf="registerForm.get('DOB').hasError('required')">

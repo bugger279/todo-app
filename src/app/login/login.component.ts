@@ -23,7 +23,8 @@ export class LoginComponent implements OnInit {
   loading = false;
   registerForm: FormGroup;
   loginForm: FormGroup;
-  maxDate = (new Date().getFullYear()).toString() + "-0" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
+  maxDate = new Date();
+  // maxDate = (new Date().getFullYear()).toString() + "-0" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,6 +46,11 @@ export class LoginComponent implements OnInit {
       Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
       rePassword: new FormControl('', [Validators.required])
     },{validators:this.passwordValidator});
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth(); //January is 0!
+    var yyyy = today.getFullYear();
+    this.maxDate = new Date(yyyy, mm, dd);
   }
   // 
   // get password() {
