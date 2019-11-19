@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-// import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import {
   MatCardModule,
@@ -12,6 +12,7 @@ import {
   MatDatepickerModule,
   MatNativeDateModule
 } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
 
 const modules = [
   MatCardModule,
@@ -22,11 +23,13 @@ const modules = [
   MatListModule,
   MatIconModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatGridListModule,
+  MatSelectModule
 ];
 
 @NgModule({
   imports: modules,
   exports: modules,
 })
-export class MaterialModule {}
+export class MaterialModule { }

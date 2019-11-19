@@ -1,10 +1,15 @@
-import { Input, Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators,FormGroupDirective, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { passwordValidator } from '../password-validator';
-// import { CommonService } from '../_services/common.service';
-import { AuthenticationService } from "../_services/authentication.service"
+import { AuthenticationService } from "../_services/authentication.service";
+import {ErrorStateMatcher} from '@angular/material/core';
+import { ToastrService } from 'ngx-toastr';
 
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return (control.dirty || control.touched) && form.invalid;
+  }
+}
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,7 +29,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService,
-    private Router: Router
+    private Router: Router,
+    private toastr: ToastrService
   ) {
     this.loginForm = new FormGroup({
       username: new FormControl('', [Validators.required]),
@@ -38,60 +44,36 @@ export class LoginComponent implements OnInit {
       Validators.maxLength(35),
       Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
       rePassword: new FormControl('', [Validators.required])
-    }, {validators:this.passwordValidator});
+    },{validators:this.passwordValidator});
   }
-  get password() {
-    return this.registerForm.get('rePassword');
-  }
+  // 
+  // get password() {
+  //   return this.registerForm.get('rePassword');
+  // }
   passwordValidator(form:FormGroup){
-    const condition = form.get('password').value!==form.get('rePassword').value
+    const condition = form.get('password').value!=form.get('rePassword').value
+    // console.log("condition",condition);
     return condition ? {passwordDoNotMatched:true}:null;
   }
-  getErrorMessage() {
-    console.log("this.registerForm.get(rePassword)", this.registerForm.get("rePassword"));
-    return this.registerForm.get("rePassword").hasError("required")
-      ? "You must enter a value"
-      : this.registerForm.get("rePassword").hasError("passwordNotMatched")
-        ? "Not a valid password"
-        : "";
-  }
+
+  // getErrorPassword(){
+    
+  //   const condition = this.registerForm.get("password")!= this.registerForm.get("rePassword")
+  //   console.log("condition",condition);
+  //   return this.registerForm.get("password")!== this.registerForm.get("rePassword") ? "password did not match":null
+  // }
 
   ngOnInit() {
     this.route.params.subscribe((params) => this.myParam = params['from']);
-    // this.registerForm = this.formBuilder.group({
-    //   name: ['', Validators.required],
-    //   emailId: ['', Validators.required, Validators.email],
-    //   DOB: ['', Validators.required],
-    //   password: ['', [Validators.required, Validators.minLength(7),
-    //     Validators.maxLength(35),
-    //     Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]]
-    // });
   }
 
 
 
   submit() {
-    // console.log("this.form", this.form.value);
-    // if (this.loginForm.value.username == "") {
-    //   this.error = "Please enter username";
-    //   this.hasError = true;
-    //   // this.submitEM.emit(this.form.value);
-    // }
-    // if (this.loginForm.value.password == "") {
-    //   this.error = "Please enter password";
-    //   this.hasError = true;
-    //   console.log("in else");
-    // }
-
     this.authenticationService.login(this.loginForm.value).subscribe(response => {
       if (response.success) {
-        // this.commonService.loginpost(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
         console.log("response", response);
-        // localStorage.setItem('loggedIn--->', "true");
-        // localStorage.setItem('userDetails', JSON.stringify(response));
-        // this.loginSuccessful.emit('Logged In');
         this.Router.navigate([""]);
-        // }
       }
     },
       (error) => {
@@ -101,44 +83,25 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.submitted = true;
-
-    // stop here if form is invalid
+    // this.submitted = true;
     if (this.registerForm.invalid) {
       console.log("In Hererer");
-      return;
+      return false;
     }
 
-    this.loading = true;
+    // this.loading = true;
 
     this.authenticationService.register(this.registerForm.value).subscribe(response => {
       if (response.success) {
-        // this.commonService.loginpost(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
-        console.log("response", response);
-        // localStorage.setItem('loggedIn--->', "true");
-        // localStorage.setItem('userDetails', JSON.stringify(response));
-        // this.loginSuccessful.emit('Logged In');
+        this.toastr.success('Success!', 'User Added Successfully!');
         this.Router.navigate(["auth/login"]);
-        // }
       }
     },
       (error) => {
+        console.log("error",error)
         window.alert("Login Credentials Not Matched.")
       });
-    // this.userService.register(this.registerForm.value)
-    //     .pipe(first())
-    //     .subscribe(
-    //         data => {
-    //             this.alertService.success('Registration successful', true);
-    //             this.router.navigate(['/login']);
-    //         },
-    //         error => {
-    //             this.alertService.error(error);
-    //             this.loading = false;
-    //         });
   }
-  // @Input() error: string | null;
-
-  // @Output() submitEM = new EventEmitter();
+  matcher = new MyErrorStateMatcher();
 
 }

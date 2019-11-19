@@ -29,8 +29,12 @@
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
 </div> -->
-<mat-card style="width: 80%;margin: auto;">
-    <mat-card-title>To Do List</mat-card-title>
+<mat-card style="width: 80%;margin: auto;margin-top: 2%;">
+    <div style="display: flex;justify-content: space-between;">
+        <mat-card-title>To Do List</mat-card-title>
+        <button mat-button><mat-icon aria-hidden="false" aria-label="Example home icon" (click)="openDialog()">add</mat-icon></button>
+    </div>
+    
     <mat-card-content>
         <mat-selection-list #tasks>
             <div *ngIf="taskList; else elseBlock">

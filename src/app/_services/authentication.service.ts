@@ -48,7 +48,6 @@ export class AuthenticationService {
 
     getList() {
         let userData = JSON.parse(localStorage.getItem('currentUser'));
-        console.log("userData",userData);
         return this.http.get<any>(`${environment.apiUrl}/getTask/${userData.data._id}`)
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
