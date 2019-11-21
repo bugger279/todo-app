@@ -33,16 +33,17 @@
   </div>
    -->
 <mat-toolbar color="primary" style="text-align: right;">
-  <span *ngIf="loggedInUser; then ifBlock else elseBlock">{{ loggedInUser.data.name }}</span>
+  <span *ngIf="isloggedIn; then ifBlock else elseBlock">{{ loggedInUser.data.name }}</span>
 </mat-toolbar>
 
 <ng-template #ifBlock>
-  <span>{{ loggedInUser.data.name }}</span>
+  <button (click)="headerBtnClk('home')" mat-button>{{ loggedInUser?.data.name }} </button>
   <span style="margin-right: 7px;flex-grow: 1;"></span>
   <button (click)="headerBtnClk('logout')" mat-button> Logout </button>
 </ng-template>
 
 <ng-template #elseBlock>
+  <button (click)="headerBtnClk('home')" mat-button> Home </button>
   <span style="margin-right: 7px;flex-grow: 1;"></span>
   <button (click)="headerBtnClk('login')" mat-button> Login </button>
   <button (click)="headerBtnClk('register')" mat-button> Register </button>

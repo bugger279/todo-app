@@ -23,8 +23,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   registerForm: FormGroup;
   loginForm: FormGroup;
-  maxDate = new Date();
-  // maxDate = (new Date().getFullYear()).toString() + "-0" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
+  maxDate = (new Date().getFullYear()-12).toString() + "-" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,35 +38,20 @@ export class LoginComponent implements OnInit {
     });
     this.registerForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
-      emailId: new FormControl('', [Validators.required, Validators.email]),
+      emailId: new FormControl('', [Validators.required,
+        Validators.pattern(/^[A-Za-z]{2,}[A-Za-z0-9]{0,}[.]{0,1}[A-Za-z0-9]{1,}[.]{0,1}[A-Za-z0-9]{1,}@[A-Za-z]{2,}[.]{1}[A-za-z]{2,3}[.]{0,1}[a-z]{0,2}$/)]),
       DOB: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.minLength(7),
-      Validators.maxLength(35),
+      Validators.maxLength(10),
       Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
       rePassword: new FormControl('', [Validators.required])
     },{validators:this.passwordValidator});
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth(); //January is 0!
-    var yyyy = today.getFullYear();
-    this.maxDate = new Date(yyyy, mm, dd);
-  }
-  // 
-  // get password() {
-  //   return this.registerForm.get('rePassword');
-  // }
-  passwordValidator(form:FormGroup){
-    const condition = form.get('password').value!=form.get('rePassword').value
-    // console.log("condition",condition);
-    return condition ? {passwordDoNotMatched:true}:null;
   }
 
-  // getErrorPassword(){
-    
-  //   const condition = this.registerForm.get("password")!= this.registerForm.get("rePassword")
-  //   console.log("condition",condition);
-  //   return this.registerForm.get("password")!== this.registerForm.get("rePassword") ? "password did not match":null
-  // }
+  passwordValidator(form:FormGroup){
+    const condition = form.get('password').value!=form.get('rePassword').value;
+    return condition ? {passwordDoNotMatched:true}:null;
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params) => this.myParam = params['from']);
@@ -76,26 +60,28 @@ export class LoginComponent implements OnInit {
 
 
   submit() {
+    if (this.loginForm.invalid) {
+      console.log("In Hererer",this.loginForm);
+      return false;
+    }
     this.authenticationService.login(this.loginForm.value).subscribe(response => {
       if (response.success) {
+        this.toastr.success('Success!', response.message);
         console.log("response", response);
         this.Router.navigate([""]);
       }
     },
       (error) => {
-        window.alert("Login Credentials Not Matched.")
+        console.log("error",error)
+        this.toastr.error('Error!', error);
       });
 
   }
 
   onSubmit() {
-    // this.submitted = true;
     if (this.registerForm.invalid) {
-      console.log("In Hererer");
       return false;
     }
-
-    // this.loading = true;
 
     this.authenticationService.register(this.registerForm.value).subscribe(response => {
       if (response.success) {
@@ -105,7 +91,7 @@ export class LoginComponent implements OnInit {
     },
       (error) => {
         console.log("error",error)
-        window.alert("Login Credentials Not Matched.")
+        this.toastr.error('Error!', error);
       });
   }
   matcher = new MyErrorStateMatcher();

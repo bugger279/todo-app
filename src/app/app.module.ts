@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
-import { ListComponent } from './list/list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -14,11 +13,12 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
-import { HomeComponent,DialogOverviewExampleDialog } from './home/home.component';
+import { HomeComponent } from './home/home.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
 import {MatDialogModule} from '@angular/material/dialog';
+import { DialogboxComponent } from './dialogbox/dialogbox.component';
 
 // import { AuthGuard } from './_guards';
 
@@ -27,11 +27,10 @@ import {MatDialogModule} from '@angular/material/dialog';
     AppComponent,
     LoginComponent,
     HeaderComponent,
-    ListComponent,
     HomeComponent,
-    DialogOverviewExampleDialog
+    DialogboxComponent
   ],
-  entryComponents: [DialogOverviewExampleDialog],
+  entryComponents: [DialogboxComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
