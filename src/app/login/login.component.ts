@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators,FormGroupDirective, NgForm } from '@angular/forms';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from "../_services/authentication.service";
-import {ErrorStateMatcher} from '@angular/material/core';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { ToastrService } from 'ngx-toastr';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   registerForm: FormGroup;
   loginForm: FormGroup;
-  maxDate = (new Date().getFullYear()-12).toString() + "-" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
+  maxDate = (new Date().getFullYear() - 12).toString() + "-" + (new Date().getMonth() + 1).toString() + "-" + (new Date().getDate()).toString();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,35 +33,39 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.loginForm = new FormGroup({
-      username: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required,
+      Validators.pattern(/^[A-Za-z]{2,}[A-Za-z0-9]{0,}[.]{0,1}[A-Za-z0-9]{1,}[.]{0,1}[A-Za-z0-9]{1,}@[A-Za-z]{2,}[.]{1}[A-za-z]{2,3}[.]{0,1}[a-z]{0,2}$/)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(7),
+      Validators.maxLength(10),
+      Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
     });
     this.registerForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       emailId: new FormControl('', [Validators.required,
-        Validators.pattern(/^[A-Za-z]{2,}[A-Za-z0-9]{0,}[.]{0,1}[A-Za-z0-9]{1,}[.]{0,1}[A-Za-z0-9]{1,}@[A-Za-z]{2,}[.]{1}[A-za-z]{2,3}[.]{0,1}[a-z]{0,2}$/)]),
+      Validators.pattern(/^[A-Za-z]{2,}[A-Za-z0-9]{0,}[.]{0,1}[A-Za-z0-9]{1,}[.]{0,1}[A-Za-z0-9]{1,}@[A-Za-z]{2,}[.]{1}[A-za-z]{2,3}[.]{0,1}[a-z]{0,2}$/)]),
       DOB: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.minLength(7),
       Validators.maxLength(10),
       Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,35}$/)]),
       rePassword: new FormControl('', [Validators.required])
-    },{validators:this.passwordValidator});
+    }, { validators: this.passwordValidator });
   }
 
-  passwordValidator(form:FormGroup){
-    const condition = form.get('password').value!=form.get('rePassword').value;
-    return condition ? {passwordDoNotMatched:true}:null;
+  passwordValidator(form: FormGroup) {
+    const condition = form.get('password').value != form.get('rePassword').value;
+    return condition ? { passwordDoNotMatched: true } : null;
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params) => this.myParam = params['from']);
+    this.route.params.subscribe((params) => {
+      this.loginForm.reset();
+      this.registerForm.reset();
+      this.myParam = params['from']});
   }
-
-
 
   submit() {
     if (this.loginForm.invalid) {
-      console.log("In Hererer",this.loginForm);
+      console.log("In Hererer", this.loginForm);
       return false;
     }
     this.authenticationService.login(this.loginForm.value).subscribe(response => {
@@ -72,7 +76,7 @@ export class LoginComponent implements OnInit {
       }
     },
       (error) => {
-        console.log("error",error)
+        console.log("error", error)
         this.toastr.error('Error!', error);
       });
 
@@ -90,7 +94,7 @@ export class LoginComponent implements OnInit {
       }
     },
       (error) => {
-        console.log("error",error)
+        console.log("error", error)
         this.toastr.error('Error!', error);
       });
   }

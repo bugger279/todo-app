@@ -58,8 +58,8 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="width: 100%;">
-                <input matInput [matDatepicker]="dp4" formControlName="endDate" readonly placeholder="endDate"  required>
-                <mat-datepicker-toggle matSuffix [for]="dp4"></mat-datepicker-toggle>
+                <input matInput [min]="minDate" [matDatepicker]="dp4" formControlName="endDate" readonly placeholder="endDate" required>
+                <mat-datepicker-toggle matSuffix [for]="dp4" [disabled]="isDisabled"></mat-datepicker-toggle>
                 <mat-datepicker #dp4 disabled="false"></mat-datepicker>
                 <mat-error *ngIf="taskForm.get('endDate').hasError('required')">
                     You must enter a value

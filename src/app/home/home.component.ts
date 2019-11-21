@@ -17,7 +17,7 @@ import { TaskServiceService } from '../_services/task-service.service';
 export class HomeComponent implements OnInit {
   // task: string;
   loggedInUser: {};
-  displayedColumns: string[] = ['actions', 'taskname', 'priority', 'startDate', 'endDate', 'comments'];
+  displayedColumns: string[] = ['taskname', 'priority', 'startDate', 'endDate', 'comments', 'actions'];
 
 
   //dataSource: MatTableDataSource < Element[] > ;
@@ -51,11 +51,11 @@ export class HomeComponent implements OnInit {
     }, 2000);
 
   }
-  editTask(element): void {
+  editTask(element,index): void {
     this.taskservice.dataObj = '';
     const dialogRef = this.dialog.open(DialogboxComponent, {
       width: '500px',
-      data: { data: element }
+      data: { data: element,index:index }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -66,34 +66,62 @@ export class HomeComponent implements OnInit {
           console.log("Before", this.dataSource.data[indx]);
           this.dataSource.data[indx] = this.taskservice.getTask();
           console.log("After", this.dataSource.data[indx]);
-          this.changeDetectorRefs.detectChanges();
-          this.dataSource.paginator = this.paginator;
         } else {
           console.log("In Else");
         }
+      } else {
+        if (localStorage.getItem('guestUser')) {
+
+          let data = JSON.parse(localStorage.getItem('guestUser'));
+          this.dataSource.data[index] = data[index];
+          // console.log("till nererere--->");
+          // setTimeout(() => {
+            // console.log("till nererere--->11111111");
+            // this.changeDetectorRefs.detectChanges();
+            // this.dataSource.paginator = this.paginator;
+          // }, 2000);
+          // this.changeDetectorRefs.detectChanges();
+          // this.dataSource.paginator = this.paginator;
+        }
       }
+      this.dataSource.paginator = this.paginator;
+      this.changeDetectorRefs.detectChanges();
+
     });
   }
-  deleteTask(id, name): void {
+  deleteTask(id, name,index): void {
     if (confirm("Are you sure to delete " + name)) {
-      this.authenticationService.deleteTask({ _id: id }).subscribe(response => {
-        if (response.success) {
-          this.toastr.success('Success!', response.message);
-          let indx = this.dataSource.data.findIndex(element => element['_id'] == id)
-          if (indx !== -1) {
-            this.dataSource.data.splice(indx, 1);
-            this.changeDetectorRefs.detectChanges();
-            this.dataSource.paginator = this.paginator;
-          } else {
-            console.log("In Else");
+      console.log("id",id)
+      if(id!=""){
+        console.log("if");
+        this.authenticationService.deleteTask({ _id: id }).subscribe(response => {
+          if (response.success) {
+            this.toastr.success('Success!', response.message);
+            let indx = this.dataSource.data.findIndex(element => element['_id'] == id)
+            if (indx !== -1) {
+              this.dataSource.data.splice(indx, 1);
+              this.changeDetectorRefs.detectChanges();
+              this.dataSource.paginator = this.paginator;
+            } else {
+              console.log("In Else");
+            }
           }
-        }
-      },
-        (error) => {
-          console.log("error", error)
-
-          this.toastr.error('Error!', error);
-        });
+        },
+          (error) => {
+            console.log("error", error)
+  
+            this.toastr.error('Error!', error);
+          });
+      } else {
+        let data = JSON.parse(localStorage.getItem('guestUser'));
+        data.splice(index, 1);
+        this.dataSource.data.splice(index, 1);
+        let localdata = JSON.stringify(data);
+        localStorage.setItem('guestUser', localdata);
+        this.changeDetectorRefs.detectChanges();
+        this.dataSource.paginator = this.paginator;
+        this.toastr.success('Success!', "Task deleted successfully!");
+      }
     }
   }
   openDialog(): void {
@@ -108,7 +136,24 @@ export class HomeComponent implements OnInit {
       // this.toastr.success('Hello world!', 'Toastr fun!');
       // this.task = result;
       if (this.taskservice.dataObj != "" && this.taskservice.method === "add") {
-        this.dataSource.data.push(this.taskservice.getTask())
+
+        if(this.dataSource){
+          this.dataSource.data.push(this.taskservice.getTask())
+        } else {
+          this.dataSource = new MatTableDataSource([this.taskservice.getTask()]);
+        }
+
+        // if(this.dataSource.data){
+        //   this.dataSource.data.push(this.taskservice.getTask())
+        // } else {
+        //   this.dataSource.data.push(this.taskservice.getTask()
+        // }
+        this.changeDetectorRefs.detectChanges();
+        this.dataSource.paginator = this.paginator;
+      } else if (localStorage.getItem('guestUser') != "null") {
+        let data = JSON.parse(localStorage.getItem('guestUser'));
+        console.log("In else if",data)
+        this.dataSource.data = data;
         this.changeDetectorRefs.detectChanges();
         this.dataSource.paginator = this.paginator;
       }
@@ -121,8 +166,14 @@ export class HomeComponent implements OnInit {
     });
     if (localStorage.getItem('currentUser')) {
       this.auth.getList().subscribe(userData => {
-        // console.log("userData",userData); 
-        this.dataSource = new MatTableDataSource(userData.data);
+        // console.log("userData",userData);
+        if(userData.success){
+
+          this.dataSource = new MatTableDataSource(userData.data);
+        } else {
+          this.dataSource = new MatTableDataSource([]);
+
+        }
         // this.taskList = userData.data;
         // this.dataSource.paginator = this.paginator;  
         //setTimeout(() => this.dataSource.paginator = this.paginator);
@@ -133,8 +184,10 @@ export class HomeComponent implements OnInit {
         });
 
     } else {
-      if (localStorage.getItem('guestUser')) {
+      if (localStorage.getItem('guestUser') && localStorage.getItem('guestUser')!="null") {
         let data = JSON.parse(localStorage.getItem('guestUser'));
+        // let data = [localData];
+        console.log("data",data);
         this.dataSource = new MatTableDataSource(data);
         // return { data: data };
       } else {
