@@ -4,9 +4,12 @@
         <form [formGroup]="loginForm" (ngSubmit)="submit()">
             <p>
                 <mat-form-field appearance="outline">
-                    <input type="text" matInput placeholder="Username" formControlName="username">
+                    <input type="text" matInput placeholder="Email ID" formControlName="username">
                     <mat-error *ngIf="loginForm.get('username').hasError('required')">
                         You must enter a value
+                    </mat-error>
+                    <mat-error *ngIf="loginForm.get('username').hasError('pattern')">
+                        You must enter valid email Id
                     </mat-error>
                 </mat-form-field>
             </p>
@@ -14,14 +17,27 @@
             <p>
                 <mat-form-field appearance="outline">
                     <input type="password" matInput placeholder="Password" formControlName="password">
-                    <mat-error *ngIf="loginForm.get('username').hasError('required')">
+                    <mat-error *ngIf="loginForm.get('password').hasError('required')">
                         You must enter a value
+                    </mat-error>
+                    <mat-error
+                        *ngIf="loginForm.get('password').hasError('minlength')&&!loginForm.get('password').hasError('required')">
+                        Enter atleast 7 characters
+                    </mat-error>
+                    <mat-error *ngIf="loginForm.get('password').hasError('maxlength')&&!loginForm.get('password').hasError('required')&&!loginForm.get('password').hasError('minlength')">
+                        Maximum length reached.
+                    </mat-error>
+                    <mat-error *ngIf="loginForm.get('password').hasError('pattern')&&!loginForm.get('password').hasError('required')&&!loginForm.get('password').hasError('minlength')&&!loginForm.get('password').hasError('maxlength')">
+                        Password must contain small letter a capital letter a number and a special character
                     </mat-error>
                 </mat-form-field>
             </p>
             <div class="button">
                 <button type="submit" [disabled]="!loginForm.valid" mat-button>Login</button>
+                <button (click)="guestClick()" mat-button>Guest User</button>
             </div>
+            <!-- <div class="button">
+            </div> -->
 
         </form>
     </mat-card-content>

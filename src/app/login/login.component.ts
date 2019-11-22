@@ -55,7 +55,9 @@ export class LoginComponent implements OnInit {
     const condition = form.get('password').value != form.get('rePassword').value;
     return condition ? { passwordDoNotMatched: true } : null;
   }
-
+  guestClick(){
+    this.Router.navigate([""]);
+  }
   ngOnInit() {
     this.route.params.subscribe((params) => {
       this.loginForm.reset();
