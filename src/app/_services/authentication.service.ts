@@ -108,6 +108,29 @@ export class AuthenticationService {
             }));
     }
 
+    // deleteTask(data: { _id: string }) {
+    //     let userData = JSON.parse(localStorage.getItem('currentUser'));
+
+    //     let header = new HttpHeaders()
+    //     header.append('Authorization', userData.token);
+    //     header.append('Content-Type', 'application/json');
+
+    //     return this.http.delete<any>(`${environment.apiUrl}/deleteTask?userID=${userData.data._id}&_id=${data._id}`,
+    //         {
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + userData.token,
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         }
+    //     )
+    //         .pipe(map(user => {
+    //             // store user details and jwt token in local storage to keep user logged in between page refreshes
+    //             // localStorage.setItem('currentUser', JSON.stringify(user));
+    //             this.currentUserSubject.next(user);
+    //             return user;
+    //         }));
+    // }
+
     deleteTask(data: { _id: string }) {
         let userData = JSON.parse(localStorage.getItem('currentUser'));
 
@@ -115,15 +138,16 @@ export class AuthenticationService {
         header.append('Authorization', userData.token);
         header.append('Content-Type', 'application/json');
 
-        return this.http.delete<any>(`${environment.apiUrl}/deleteTask?userID=${userData.data._id}&_id=${data._id}`,
+        return this.http.delete<any>(`http://10.0.61.221:8000/api/task/5ddb4be28b876952b64e48dd/5ddb7824fbc6f301e56f6ad9`,
             {
                 headers: {
-                    'Authorization': 'Bearer ' + userData.token,
+                    // 'x-auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJfaWQiOiI1ZGRiNGJlMjhiODc2OTUyYjY0ZTQ4ZGQiLCJuYW1lIjoiSmF5cHJha2FzaCIsImVtYWlsIjoieWFkYXYuamF5cHJha2FzaDE5QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NzQ2NjM1OTcsImV4cCI6MTU3NDgzNjM5N30.oWJvjt8BJikhcPi-uG7kMm_oFt-dUMdAZb_xCYJoE3U',
                     'Content-Type': 'application/json'
                 }
             }
         )
             .pipe(map(user => {
+                console.log("user",user);
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 // localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);

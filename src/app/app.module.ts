@@ -19,6 +19,7 @@ import { MatPaginatorModule } from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 
 // import { AuthGuard } from './_guards';
 
@@ -46,6 +47,9 @@ import { DialogboxComponent } from './dialogbox/dialogbox.component';
     MatPaginatorModule,
     ToastrModule.forRoot(),
     MatDialogModule,
+    ConfirmationPopoverModule.forRoot({
+      confirmButtonType: 'danger' // set defaults here
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

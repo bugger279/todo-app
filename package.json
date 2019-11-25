@@ -23,10 +23,13 @@
     "@angular/platform-browser-dynamic": "~8.2.13",
     "@angular/router": "~8.2.13",
     "@fortawesome/angular-fontawesome": "^0.5.0",
+    "angular-confirmation-popover": "^4.2.1",
+    "bootstrap": "^4.3.1",
     "flex-layout": "^1.0.1",
     "hammerjs": "^2.0.8",
     "ngx-toastr": "^11.2.1",
     "rxjs": "~6.4.0",
+    "smalltalk": "^4.0.2",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

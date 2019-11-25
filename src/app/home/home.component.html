@@ -76,7 +76,17 @@
                         <ng-container matColumnDef="actions">
                             <th mat-header-cell *matHeaderCellDef> Action </th>
                             <td mat-cell *matCellDef="let row; let i = index"><button><i class="material-icons" (click)="editTask(row,i)">edit</i></button>
-                                <button><i class="material-icons" (click)="deleteTask(row._id,row.taskname,i)">delete</i></button></td>
+                                <!-- <button
+      class="btn btn-default"
+      mwlConfirmationPopover
+      [popoverTitle]="popoverTitle"
+      [popoverMessage]="popoverMessage"
+      placement="left"
+      (confirm)="confirmClicked = true"
+      (cancel)="cancelClicked = true">
+      <i class="material-icons" (click)="deleteTask(row._id,row.taskname,i)">delete</i>
+    </button>  -->
+    <button><i class="material-icons" (click)="deleteTask(row._id,row.taskname,i)">delete</i></button></td>
                         </ng-container>
             
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
