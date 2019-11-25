@@ -150,7 +150,7 @@ export class HomeComponent implements OnInit {
         // }
         this.changeDetectorRefs.detectChanges();
         this.dataSource.paginator = this.paginator;
-      } else if (localStorage.getItem('guestUser') != "null") {
+      } else if ((localStorage.getItem('guestUser') != "null" || localStorage.getItem('guestUser') != "[]")&& localStorage.getItem('currentUser')==null) {
         let data = JSON.parse(localStorage.getItem('guestUser'));
         console.log("In else if",data)
         this.dataSource.data = data;
